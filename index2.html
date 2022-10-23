@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Hello</title>
+</head>
+<body>
+    <h1>Data Stock App</h1>
+    <p>Stock Symbol:</p>
+    <!--
+    <div style="border: 1px solid #e0e3eb; height: 100%; width: 100%">
+        <iframe width="100%" frameborder="0"
+                height="100%"
+                src="https://widget.finnhub.io/widgets/etf-holdings?symbol=voo&theme=light" title="voo Holdings Data by Finnhub Stock API">
+        </iframe>
+     </div>
+     <div style="width: 100%; text-align: center; margin-top:10px;">
+            voo Holdings Data by <a href="https://finnhub.io/" target="_blank" style="color: #1db954;">Finnhub Stock API</a>
+     </div>
+    -->
+    <input type="text" id="stock">
+    <button onclick="showe()">Search</button>
+    <p id="show"></p>
+    <table id="table" align = "center" border="1px"></table>
+</body>
+<script>
+    const api_key = "1327a9241cf2ec0b43956d0d8d92dffd";
+    const api_url = "https://financialmodelingprep.com/api/v3";
+
+    let show = document.getElementById("show");
+    let numberOfCalls = 0;
+
+    function showe(){
+        numberOfCalls += 1;
+        show.textContent = "Number of calls " + numberOfCalls;
+        let stock = document.getElementById("stock").value;
+
+        async function get_income_statement() {
+            let response = await fetch(api_url+`/income-statement/`+stock+`?apikey=`+api_key);
+            let data = await response.json();
+            return data;
+        }
+        //get_income_statement().then(data => show.textContent= data[0].symbol);
+        //get_income_statement().then(data => console.log(data[0]));
+
+        get_income_statement().then(function(data){
+            let cols = [];
+            for (var i = 0; i < data.length; i++) {
+                for (var k in data[i]) {
+                    if (cols.indexOf(k) === -1) {
+                        // Push all keys to the array
+                        cols.push(k);
+                    }
+                }
+            }
+              
+            // Create a table element
+            var table = document.createElement("table");
+            // Create table row tr element of a table
+            var tr = table.insertRow(-1);
+              
+            for (var i = 0; i < cols.length; i++) {
+                // Create the table header th element
+                var theader = document.createElement("th");
+                theader.innerHTML = cols[i];
+                // Append columnName to the table row
+                tr.appendChild(theader);
+            }
+              
+             // Adding the data to the table
+            for (var i = 0; i < data.length; i++) {
+                // Create a new row
+                trow = table.insertRow(-1);
+                for (var j = 0; j < cols.length; j++) {
+                    var cell = trow.insertCell(-1);
+                    // Inserting the cell at particular place
+                    cell.innerHTML = data[i][cols[j]];
+                }
+            }
+              
+            // Add the newly created table containing json data
+            var el = document.getElementById("table");
+            el.innerHTML = "";
+            el.appendChild(table);
+        });
+
+
+
+
+
+
+
+
+        async function get_balance_sheet_statement() {
+            let response_2 = await fetch(api_url+`/balance-sheet-statement/`+stock+`?apikey=`+api_key);
+            let data_2 = await response_2.json();
+            return data_2;
+        }
+        get_balance_sheet_statement().then(data_2 => console.log(data_2[0]));
+    }
+
+    /*    
+    const Dis = "DIS"
+    async function getUsers() {
+        let response = await fetch(
+          `https://financialmodelingprep.com/api/v3/income-statement/`+Dis+`?apikey=1327a9241cf2ec0b43956d0d8d92dffd`
+        );
+        let data = await response.json();
+        return data;
+      }
+    getUsers().then(data => console.log(data));
+    */
+    
+    /*
+    const api_url = new URL('https://financialmodelingprep.com/api/v3/income-statement/DIS?apikey=1327a9241cf2ec0b43956d0d8d92dffd');
+    
+    console.log(api_url);
+    let stock = "XOM";
+    api_url.pathname = "/api/v3/income-statement/" + stock;
+    
+    async function getData(){
+        const response = await fetch(api_url);
+        const data = await response.json();
+        console.log(data);
+    }
+
+    getData();
+    */
+    
+    /*
+    const api_URL = "https://api.polygon.io/v3/reference/dividends?apiKey=efqVkppBqxcXGTPyMrG8nMGzaaPmKpgo";
+    async function getData(){
+        const response = await fetch(api_URL);
+        const data = await response.json();
+        console.log(data);
+    }
+
+    getData();
+    */
+
+</script>
+</html>

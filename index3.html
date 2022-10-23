@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Hello</title>
+</head>
+<body>
+    <h1>Data Stock App</h1>
+    <p>Stock Symbol:</p>
+    <input type="text" id="stock">
+    <button onclick="showe()">Search</button>
+    <p id="show"></p>
+    <table id="table" align = "center" border="1px"></table>
+</body>
+<script>
+    const api_key = "1327a9241cf2ec0b43956d0d8d92dffd";
+    const api_url = "https://financialmodelingprep.com/api/v3";
+
+    let show = document.getElementById("show");
+    let numberOfCalls = 0;
+
+    function showe(){
+        numberOfCalls += 1;
+        show.textContent = "Number of calls " + numberOfCalls;
+        let stock = document.getElementById("stock").value;
+
+        async function get_income_statement() {
+            let response = await fetch(api_url+`/income-statement/`+stock+`?apikey=`+api_key);
+            let data = await response.json();
+            return data;
+        }
+
+        get_income_statement().then(function(data){
+            let cols = [];
+            let rows = [];
+            for (var i = 0; i < data.length; i++) {
+                cols.push(data[i].date);
+            }
+            
+            for (var i = 0; i < data.length; i++){
+                rows.push(Object.keys(data[i]));
+            }
+
+            let object_keys_index = 0;
+            for (var i = 0; i < rows.length; i++){rows[i].splice(object_keys_index, 4);}
+            for (var i = 0; i < rows.length; i++){object_keys_index = 1;rows[i].splice(object_keys_index, 3);}
+            for (var i = 0; i < rows.length; i++){object_keys_index = 6;rows[i].splice(object_keys_index, 4);}
+            for (var i = 0; i < rows.length; i++){object_keys_index = rows[i].length - 2;rows[i].splice(object_keys_index, 1);}
+
+            console.log(cols);
+            console.log(rows);
+        });
+    }
+</script>
+</html>
